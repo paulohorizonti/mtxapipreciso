@@ -6,13 +6,13 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA2PM/V8SvIUSPsBtIDH7z5wAAAAACAAAAAAAQZgAAAAEAACAAAAAVIuKPqn+hNHwC3hOZ4E4nznziBuP0mNHU4E7dn4JFkgAAAAAOgAAAAAIAACAAAAD36QIKWJgi6t6fQSNkXs1d8Gzd6BxQ0I+NzkPi01UdZSAAAABMWwPWH/qoNU7QrlDLjslF6x9zwnbHVxVBYITbK6dF8UAAAACs+rysTdVyPo4TGXB4xnh6lS5CJLIPtemV0R/PAS05Po0hIJ7gkA/fzjq6kkP2B0cgTKn8xUwu7+HspUy+RZdI</EncryptedPassword>
-    <History>True|2021-09-16T17:11:43.6046163Z;True|2021-09-14T16:05:24.4490532-03:00;True|2021-09-14T11:51:57.4972360-03:00;True|2021-09-14T11:06:59.9104672-03:00;True|2021-09-14T10:38:12.5050708-03:00;True|2021-09-14T09:53:49.5167014-03:00;True|2021-09-14T09:25:50.0587513-03:00;False|2021-09-14T09:05:54.6593894-03:00;False|2021-09-14T09:04:56.0586916-03:00;False|2021-09-14T09:03:16.5920875-03:00;False|2021-09-14T09:02:33.7521872-03:00;False|2021-09-14T09:01:48.0316089-03:00;</History>
-    <_PublishTargetUrl>ftp://ftp.site4now.net/mtx</_PublishTargetUrl>
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA2PM/V8SvIUSPsBtIDH7z5wAAAAACAAAAAAAQZgAAAAEAACAAAABmWyNH96cvycJMLNr8w+wRI1bSznO/KCcVbwro2mjpjgAAAAAOgAAAAAIAACAAAACBUG/THf3bdKKf5l+ZqKbMwQK9wYDQhvARLx0Q4V/OwyAAAACu6MbjfH7uUBUVnotlCKNRZ9Zrg5jsPiwkMvD+QldDSkAAAAAWmGijq0sd5DyG43UNnaZE4MqmIHwRTvug9XTG/UNNrQeN5KSU7nADWH9oRRre1Pqc+3g7cFYhgygTcxjW7Pr0</EncryptedPassword>
+    <History>True|2021-10-21T13:09:43.8916417Z;True|2021-09-16T14:11:43.6046163-03:00;True|2021-09-14T16:05:24.4490532-03:00;True|2021-09-14T11:51:57.4972360-03:00;True|2021-09-14T11:06:59.9104672-03:00;True|2021-09-14T10:38:12.5050708-03:00;True|2021-09-14T09:53:49.5167014-03:00;True|2021-09-14T09:25:50.0587513-03:00;False|2021-09-14T09:05:54.6593894-03:00;False|2021-09-14T09:04:56.0586916-03:00;False|2021-09-14T09:03:16.5920875-03:00;False|2021-09-14T09:02:33.7521872-03:00;False|2021-09-14T09:01:48.0316089-03:00;</History>
+    <_PublishTargetUrl>ftp://ftp.site4now.net/mtxapi</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApplicationInsights.config">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 21:19:00</publishTime>
     </File>
     <File Include="Areas/HelpPage/HelpPage.css">
       <publishTime>09/13/2021 20:50:25</publishTime>
@@ -183,10 +183,10 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
       <publishTime>07/25/2012 11:48:56</publishTime>
     </File>
     <File Include="bin/MtxApi.dll">
-      <publishTime>09/16/2021 14:02:36</publishTime>
+      <publishTime>10/21/2021 09:51:48</publishTime>
     </File>
     <File Include="bin/MtxApi.pdb">
-      <publishTime>09/16/2021 14:02:36</publishTime>
+      <publishTime>10/21/2021 09:51:48</publishTime>
     </File>
     <File Include="bin/MySql.Data.dll">
       <publishTime>05/31/2021 12:26:30</publishTime>
@@ -402,7 +402,7 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
       <publishTime>11/28/2018 14:04:24</publishTime>
     </File>
     <File Include="bin/System.Web.Http.dll">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>11/28/2018 14:01:00</publishTime>
     </File>
     <File Include="bin/System.Web.Http.Owin.dll">
       <publishTime>11/28/2018 11:01:48</publishTime>
@@ -453,13 +453,13 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
       <publishTime>09/13/2021 20:50:01</publishTime>
     </File>
     <File Include="Content/bootstrap.css.map">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="Content/bootstrap.min.css">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="Content/bootstrap.min.css.map">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="Content/Site.css">
       <publishTime>09/13/2021 20:49:45</publishTime>
@@ -468,28 +468,28 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
       <publishTime>09/13/2021 20:49:45</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.eot">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.svg">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.ttf">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.woff">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="fonts/glyphicons-halflings-regular.woff2">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="Global.asax">
       <publishTime>09/13/2021 20:49:45</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="Scripts/bootstrap.min.js">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/13/2021 20:50:00</publishTime>
     </File>
     <File Include="Scripts/jquery-3.4.1.js">
       <publishTime>09/13/2021 20:50:02</publishTime>
@@ -552,7 +552,7 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
       <publishTime>09/13/2021 20:49:45</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>09/14/2021 10:28:35</publishTime>
+      <publishTime>10/21/2021 09:51:53</publishTime>
     </File>
   </ItemGroup>
 </Project>
