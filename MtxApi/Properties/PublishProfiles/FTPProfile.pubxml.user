@@ -7,8 +7,8 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA2PM/V8SvIUSPsBtIDH7z5wAAAAACAAAAAAAQZgAAAAEAACAAAABmWyNH96cvycJMLNr8w+wRI1bSznO/KCcVbwro2mjpjgAAAAAOgAAAAAIAACAAAACBUG/THf3bdKKf5l+ZqKbMwQK9wYDQhvARLx0Q4V/OwyAAAACu6MbjfH7uUBUVnotlCKNRZ9Zrg5jsPiwkMvD+QldDSkAAAAAWmGijq0sd5DyG43UNnaZE4MqmIHwRTvug9XTG/UNNrQeN5KSU7nADWH9oRRre1Pqc+3g7cFYhgygTcxjW7Pr0</EncryptedPassword>
-    <History>True|2021-10-21T13:09:43.8916417Z;True|2021-09-16T14:11:43.6046163-03:00;True|2021-09-14T16:05:24.4490532-03:00;True|2021-09-14T11:51:57.4972360-03:00;True|2021-09-14T11:06:59.9104672-03:00;True|2021-09-14T10:38:12.5050708-03:00;True|2021-09-14T09:53:49.5167014-03:00;True|2021-09-14T09:25:50.0587513-03:00;False|2021-09-14T09:05:54.6593894-03:00;False|2021-09-14T09:04:56.0586916-03:00;False|2021-09-14T09:03:16.5920875-03:00;False|2021-09-14T09:02:33.7521872-03:00;False|2021-09-14T09:01:48.0316089-03:00;</History>
-    <_PublishTargetUrl>ftp://ftp.site4now.net/mtxapi</_PublishTargetUrl>
+    <History>True|2021-11-03T19:25:33.7075302Z;True|2021-11-03T15:22:22.8497265-03:00;True|2021-10-21T10:09:43.8916417-03:00;True|2021-09-16T14:11:43.6046163-03:00;True|2021-09-14T16:05:24.4490532-03:00;True|2021-09-14T11:51:57.4972360-03:00;True|2021-09-14T11:06:59.9104672-03:00;True|2021-09-14T10:38:12.5050708-03:00;True|2021-09-14T09:53:49.5167014-03:00;True|2021-09-14T09:25:50.0587513-03:00;False|2021-09-14T09:05:54.6593894-03:00;False|2021-09-14T09:04:56.0586916-03:00;False|2021-09-14T09:03:16.5920875-03:00;False|2021-09-14T09:02:33.7521872-03:00;False|2021-09-14T09:01:48.0316089-03:00;</History>
+    <_PublishTargetUrl>ftp://win5097.site4now.net/mtxapi</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApplicationInsights.config">
@@ -183,16 +183,16 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
       <publishTime>07/25/2012 11:48:56</publishTime>
     </File>
     <File Include="bin/MtxApi.dll">
-      <publishTime>10/21/2021 09:51:48</publishTime>
+      <publishTime>11/03/2021 16:12:26</publishTime>
     </File>
     <File Include="bin/MtxApi.pdb">
-      <publishTime>10/21/2021 09:51:48</publishTime>
+      <publishTime>11/03/2021 16:12:26</publishTime>
     </File>
     <File Include="bin/MySql.Data.dll">
-      <publishTime>05/31/2021 12:26:30</publishTime>
+      <publishTime>09/28/2021 02:29:52</publishTime>
     </File>
     <File Include="bin/MySql.Data.EntityFramework.dll">
-      <publishTime>05/31/2021 12:26:30</publishTime>
+      <publishTime>09/28/2021 02:29:52</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>04/22/2019 01:06:16</publishTime>
@@ -429,13 +429,16 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
       <publishTime>11/28/2018 14:04:24</publishTime>
     </File>
     <File Include="bin/Ubiety.Dns.Core.dll">
-      <publishTime>05/31/2021 12:25:08</publishTime>
+      <publishTime>09/28/2021 02:28:28</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>01/23/2014 14:57:34</publishTime>
     </File>
     <File Include="bin/Zstandard.Net.dll">
       <publishTime>05/31/2021 12:25:08</publishTime>
+    </File>
+    <File Include="bin/ZstdNet.dll">
+      <publishTime>09/28/2021 02:28:28</publishTime>
     </File>
     <File Include="Content/bootstrap-theme.css">
       <publishTime>09/13/2021 20:50:01</publishTime>
@@ -552,7 +555,7 @@ ao editar este arquivo MSBuild. Para saber mais sobre isso, visite https://go.mi
       <publishTime>09/13/2021 20:49:45</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>10/21/2021 09:51:53</publishTime>
+      <publishTime>11/03/2021 16:12:36</publishTime>
     </File>
   </ItemGroup>
 </Project>
