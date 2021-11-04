@@ -1,33 +1,43 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="~/Content/Img/preciso.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+    <link href="~/Scripts/Graficos/all-min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Monda&display=swap" rel="stylesheet">
+
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/Graficos/loader.js"></script><!--Necessário para os gráficos-->
 </head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Nome do aplicativo", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Página Inicial", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+    <nav class="navbar navbar-expand-lg navbar-dark prn-thead fixed-top">
+
+        <div class="container-fluid">
+            <a class="navbar-brand" href="@Url.Action("Index", "HomeApi")">
+                <img src="~/Content/Img/logo_nova_empresas_0707.png" width="150" height="25" class="d-inline-block align-top" alt="">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menuCollapse" aria-controls="menuCollapse" aria-expanded="false" aria-label="Alterna navegação">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menuCollapse">
+                <ul class="navbar-nav">
+                    <li>@Html.ActionLink("Início", "Index", "Home", new { @class = "nav-item nav-link active" })</li>
+                    <li><a href="http://precisotax.com.br/#sobre" target="_blank" class="nav-item nav-link">Sobre</a></li>
+                    <li><a href="http://precisotax.com.br/#contato" target="_blank" class="nav-item nav-link">Contato</a></li>
+
                 </ul>
+
             </div>
+
         </div>
-    </div>
+    </nav>
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -36,8 +46,255 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+
+    <script src="~/Scripts/Graficos/jquery-1.12.4.min.js"></script>
+    <script src="~/Scripts/Graficos/bootstrap.bundle.min.js"></script>
+
+
+    <!--Graficos-->
+    <script>
+
+                    /*Icms de saída*/
+                     $(document).ready(function () {
+
+                         google.charts.load("current", { packages: ["corechart"] });
+
+                         google.charts.setOnLoadCallback(aliIcmsVarConsFinal);   /*Ok*/
+                         google.charts.setOnLoadCallback(aliIcmsSTVarConsFinal); /*Ok*/
+
+                         google.charts.setOnLoadCallback(aliIcmsVendaVarCont); 
+                         google.charts.setOnLoadCallback(aliIcmsSTVendaVarCont);
+
+                         google.charts.setOnLoadCallback(aliIcmsVendaAtaCont);
+                         google.charts.setOnLoadCallback(aliIcmsSTVendaAtaCont);
+
+                         google.charts.setOnLoadCallback(aliqIcmsVendaAtaSN); 
+                         google.charts.setOnLoadCallback(aliqIcmsSTVendaAtaSN);
+
+
+
+                         function aliIcmsVarConsFinal() {
+                             var data = google.visualization.arrayToDataTable([
+                                        ['Aliquota', 'Valores'],
+                                        ['Maiores', @Html.Raw(ViewBag.AlqICMSVarejoCFMaior)],
+                                        ['Menores', @Html.Raw(ViewBag.AlqICMSVarejoCFMenor)],
+                                        ['Iguais', @Html.Raw(ViewBag.AlqICMSVarejoCFIgual)],
+                                        ['Nulas MTX', @Html.Raw(ViewBag.AlqICMSVarejoCFNullaInterno)],
+                                        ['Nulas Cliente', @Html.Raw(ViewBag.AlqICMSVarejoCFNullaExterno)]
+
+                                    ]);
+
+                                    var options = {
+                                        title: 'Relação Cliente vs MTX',
+                                        sliceVisibilityThreshold: .00001,
+                                        pieHole: 0.3,
+                                        pieSliceTextStyle: {
+                                        color: 'black',
+                                            fontSize: '10'
+                                        },
+                                        legend: 'true'
+                                    };
+
+                             var chart = new google.visualization.PieChart(document.getElementById('aliIcmsVarConsFinal'));
+                            chart.draw(data, options);
+                         }//fim venda varejo cons final
+
+                         function aliIcmsSTVarConsFinal() {
+                              var data = google.visualization.arrayToDataTable([
+                                        ['Aliquota', 'Valores'],
+                                        ['Maiores', @Html.Raw(ViewBag.AlqICMSSTVarejoCFMaior)],
+                                        ['Menores', @Html.Raw(ViewBag.AlqICMSSTVarejoCFMenor)],
+                                        ['Iguais', @Html.Raw(ViewBag.AlqICMSSTVarejoCFIgual)],
+                                        ['Nulas Matriz', @Html.Raw(ViewBag.AlqICMSSTVarejoCFNulaInterno)],
+                                        ['Nulas Cliente', @Html.Raw(ViewBag.AlqICMSSTVarejoCFNulaExterno)]
+                              ]);
+
+                                    var options = {
+                                        title: 'Relação Cliente vs MTX',
+                                        sliceVisibilityThreshold: .00001,
+                                        pieHole: 0.3,
+                                        pieSliceTextStyle: {
+                                        color: 'black',
+                                            fontSize: '10'
+                                        },
+                                        legend: 'true'
+                                    };
+
+                             var chart = new google.visualization.PieChart(document.getElementById('aliIcmsSTVarConsFinal'));
+
+                             chart.draw(data, options);
+                         }// fim aliIcmsVarConsFinal
+
+                         function aliIcmsVendaVarCont() {
+                             var data = google.visualization.arrayToDataTable([
+                                        ['Aliquota', 'Valores'],
+                                        ['Maiores', @Html.Raw(ViewBag.AlqICMSVendaVContMaior)],
+                                        ['Menores', @Html.Raw(ViewBag.AlqICMSVendaVContMenor)],
+                                        ['Iguais', @Html.Raw(ViewBag.AlqICMSVendaVContIguais)],
+                                        ['Nulas Matriz', @Html.Raw(ViewBag.AlqICMSVendaVContNulasInternos)],
+                                        ['Nulas Cliente', @Html.Raw(ViewBag.AlqICMSVendaVContNulasExternos)]
+                                    ]);
+
+                                    var options = {
+                                        title: 'Relação Cliente vs Matriz',
+                                        sliceVisibilityThreshold: .00001,
+                                        pieHole: 0.3,
+                                        pieSliceTextStyle: {
+                                        color: 'black',
+                                            fontSize: '10'
+                                        },
+                                        legend: 'true'
+                                    };
+
+                             var chart = new google.visualization.PieChart(document.getElementById('aliIcmsVendaVarCont'));
+
+                             chart.draw(data, options);
+                         }// fim aliicmsvendavarcont
+
+                         function aliIcmsSTVendaVarCont() {
+                             var data = google.visualization.arrayToDataTable([
+                                        ['Aliquota', 'Valores'],
+                                        ['Maiores', @Html.Raw(ViewBag.AlqICMSSTVendaVContMaior)],
+                                        ['Menores', @Html.Raw(ViewBag.AlqICMSSTVendaVContMenor)],
+                                        ['Iguais', @Html.Raw(ViewBag.AlqICMSSTVendaVContIguais)],
+                                        ['Nulas Matriz', @Html.Raw(ViewBag.AlqICMSSTVendaVContNulasInternos)],
+                                        ['Nulas Cliente', @Html.Raw(ViewBag.AlqICMSSTVendaVContNulasExternos)]
+                                    ]);
+
+                                    var options = {
+                                        title: 'Relação Cliente vs Matriz',
+                                        sliceVisibilityThreshold: .00001,
+                                        pieHole: 0.3,
+                                        pieSliceTextStyle: {
+                                        color: 'black',
+                                            fontSize: '10'
+                                        },
+                                        legend: 'true'
+                                    };
+
+                             var chart = new google.visualization.PieChart(document.getElementById('aliIcmsSTVendaVarCont'));
+
+                             chart.draw(data, options);
+                         }//fim venda varj cont st
+
+                         function aliIcmsVendaAtaCont() {
+                             var data = google.visualization.arrayToDataTable([
+                                        ['Aliquota', 'Valores'],
+                                        ['Maiores', @Html.Raw(ViewBag.AlqICMSVataMaior)],
+                                        ['Menores', @Html.Raw(ViewBag.AlqICMSVataMenor)],
+                                        ['Iguais', @Html.Raw(ViewBag.AlqICMSVataIgual)],
+                                        ['Nulas Matriz', @Html.Raw(ViewBag.AlqICMSVataNulaInterno)],
+                                        ['Nulas Cliente', @Html.Raw(ViewBag.AlqICMSVataNulaExterno)]
+                                    ]);
+
+                                    var options = {
+                                        title: 'Relação Cliente vs Matriz',
+                                        sliceVisibilityThreshold: .00001,
+                                        pieHole: 0.3,
+                                        pieSliceTextStyle: {
+                                            color: 'black',
+                                            fontSize: '10'
+                                        },
+                                        legend: 'true'
+                                    };
+
+                             var chart = new google.visualization.PieChart(document.getElementById('aliIcmsVendaAtaCont'));
+
+                             chart.draw(data, options);
+                         }//fim icms venda ata cont
+
+                         function aliIcmsSTVendaAtaCont() {
+                             var data = google.visualization.arrayToDataTable([
+                                        ['Aliquota', 'Valores'],
+                                        ['Maiores', @Html.Raw(ViewBag.AlqICMSSTVataMaior)],
+                                        ['Menores', @Html.Raw(ViewBag.AlqICMSSTVataMenor)],
+                                        ['Iguais', @Html.Raw(ViewBag.AlqICMSSTVataIgual)],
+                                        ['Nulas Matriz', @Html.Raw(ViewBag.AlqICMSSTVataNulaInterno)],
+                                        ['Nulas Cliente', @Html.Raw(ViewBag.AlqICMSSTVataNulaExterno)]
+                                    ]);
+
+                                    var options = {
+                                        title: 'Relação Cliente vs Matriz',
+                                        sliceVisibilityThreshold: .00001,
+                                        pieHole: 0.3,
+                                        pieSliceTextStyle: {
+                                        color: 'black',
+                                            fontSize: '10'
+                                        },
+                                        legend: 'true'
+                                    };
+
+                             var chart = new google.visualization.PieChart(document.getElementById('aliIcmsSTVendaAtaCont'));
+
+                             chart.draw(data, options);
+                         }//Fim icms st venda ata cont
+
+                         function aliqIcmsVendaAtaSN() {
+                              var data = google.visualization.arrayToDataTable([
+                                        ['Aliquota', 'Valores'],
+                                        ['Maiores', @Html.Raw(ViewBag.AliqICMSVendaAtaSimpNacionalMaior)],
+                                        ['Menores', @Html.Raw(ViewBag.AliqICMSVendaAtaSimpNacionalMenor)],
+                                        ['Iguais', @Html.Raw(ViewBag.AliqICMSVendaAtaSimpNacionalIgual)],
+                                        ['Nulas Matriz', @Html.Raw(ViewBag.AliqICMSVendaAtaSimpNacionalNulaInterno)],
+                                        ['Nulas Cliente', @Html.Raw(ViewBag.AliqICMSVendaAtaSimpNacionalNulaExterno)]
+                                    ]);
+
+                                    var options = {
+                                        title: 'Relação Cliente vs Matriz',
+                                        sliceVisibilityThreshold: .00001,
+                                        pieHole: 0.3,
+                                        pieSliceTextStyle: {
+                                        color: 'black',
+                                            fontSize: '10'
+                                        },
+                                        legend: 'true'
+                                    };
+
+                             var chart = new google.visualization.PieChart(document.getElementById('aliqIcmsVendaAtaSN'));
+
+                             chart.draw(data, options);
+                         } //Fim venda atacado para simples nacional
+
+                          /*Aliq ICMS ST Venda no atacado para Simples Nacional*/
+                         function aliqIcmsSTVendaAtaSN() {
+                              var data = google.visualization.arrayToDataTable([
+                                        ['Aliquota', 'Valores'],
+                                        ['Maiores', @Html.Raw(ViewBag.AliqICMSSTVendaAtaSimpNacionalMaior)],
+                                        ['Menores', @Html.Raw(ViewBag.AliqICMSSTVendaAtaSimpNacionalMenor)],
+                                        ['Iguais', @Html.Raw(ViewBag.AliqICMSSTVendaAtaSimpNacionalIgual)],
+                                        ['Nulas Matriz', @Html.Raw(ViewBag.AliqICMSSTVendaAtaSimpNacionalNulaInterno)],
+                                        ['Nulas Cliente', @Html.Raw(ViewBag.AliqICMSVendaAtaSimpNacionalNulaExterno)]
+                                    ]);
+
+                                    var options = {
+                                        title: 'Relação Cliente vs Matriz',
+                                        pieHole: 0.3,
+                                        pieSliceTextStyle: {
+                                        color: 'black',
+                                            fontSize: '10'
+                                        },
+                                        legend: 'true'
+                                    };
+
+                             var chart = new google.visualization.PieChart(document.getElementById('aliqIcmsSTVendaAtaSN'));
+
+                             chart.draw(data, options);
+                         }//fim funcao aliqIcmsSTVendaAtaSN
+
+
+
+                     }); //fim do doc read
+
+
+
+
+    </script>
+
+
+
+
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @*@Scripts.Render("~/bundles/bootstrap")*@
     @RenderSection("scripts", required: false)
 </body>
 </html>

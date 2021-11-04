@@ -164,6 +164,6 @@ C:\Users\preciso\source\repos\MtxApi\MtxApi\bin\pt-br\System.Web.WebPages.resour
 C:\Users\preciso\source\repos\MtxApi\MtxApi\bin\pt-br\System.Web.WebPages.Deployment.resources.dll
 C:\Users\preciso\source\repos\MtxApi\MtxApi\bin\pt-br\System.Web.WebPages.Razor.resources.dll
 C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.csproj.CoreCompileInputs.cache
-C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.csproj.CopyComplete
 C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.dll
 C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.pdb
+C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.csproj.AssemblyReference.cache

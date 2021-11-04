@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Web.Http;
@@ -38,7 +39,7 @@ namespace MtxApi.Controllers
             /*CONFIRMAR EXISTENCIA DA EMPRESA */
 
             //formatando a string
-            string cnpjFormatado = FormatCNPJ(cnpj);
+            string cnpjFormatado = FormataCnpj.FormatarCNPJ(cnpj);
 
             //Instancia do contexto do banco
             MtxApiContext db = new MtxApiContext();
@@ -292,7 +293,7 @@ namespace MtxApi.Controllers
                 return BadRequest("FAVOR INFORMAR O CNPJ NO PARÂMETRO");
             }
             //formatando a string
-            string cnpjFormatado = FormatCNPJ(cnpj);
+            string cnpjFormatado = FormataCnpj.FormatarCNPJ(cnpj);
 
             //verificar a qtd de digitos
             if (cnpj.Length != 14)
@@ -316,13 +317,17 @@ namespace MtxApi.Controllers
             return Ok(cont + " Iten(s) deletado(s) da tabela para o CNPJ : " + cnpjFormatado);
         }
 
+        //Mostrar analise de tributação 
 
-
-
-        //formata cnpj
-        public static string FormatCNPJ(string CNPJ)
+        [Route("api/TributacaoEmpresaAnalise/{cnpj}")]
+        public HttpResponseMessage GetTributacaoEmpresaAnalise(string cnpj)
         {
-            return Convert.ToUInt64(CNPJ).ToString(@"00\.000\.000\/0000\-00");
+            var response = Request.CreateResponse(HttpStatusCode.Moved);
+            response.Headers.Location = new Uri("https://localhost:44320/HomeApi/EmpresaTributacao?cnpj="+cnpj);
+            return response;
         }
+
+
+           
     }
 }

@@ -1,0 +1,393 @@
+﻿
+@{
+    ViewBag.Title = "EmpresaTributacao";
+}
+
+<div class="jumbotron">
+    <h1 class="display-4">Tributação Empresa</h1>
+    <p class="lead">Relatório gráfico de Tributação de Produtos para a Empresa informada</p>
+    <hr class="my-4">
+    @if (ViewBag.ErroMensagem != null)
+    {
+
+
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>@ViewBag.ErroMensagem</strong> Verifique os dados informados e tente novamente
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+
+    }
+    else
+    {
+        <div class="container">
+            <form>
+                <div class="form-group row">
+                    <label for="razap" class="col-lg-2 col-form-label col-form-label-sm"><span class="prn-fonte">Razão Social</span></label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control form-control-sm" id="razao" placeholder="col-form-label-sm" value="@ViewBag.RazaoSocial" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="fantasia" class="col-sm-2 col-form-label col-form-label-sm"><span class="prn-fonte">Fantasia</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control form-control-sm" id="fantasia" placeholder="col-form-label-sm" value="@ViewBag.Fantasia" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="cnpj" class="col-sm-2 col-form-label col-form-label-sm"><span class="prn-fonte">Cnpj</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control form-control-sm" id="cnpj" placeholder="col-form-label-sm" value="@ViewBag.Cnpj" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="cidade" class="col-sm-2 col-form-label col-form-label-sm"><span class="prn-fonte">Cidade</span></label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control form-control-sm" id="cidade" placeholder="col-form-label-sm" value="@ViewBag.Cidade" readonly>
+                    </div>
+                    <label for="estado" class="col-sm-2 col-form-label col-form-label-sm"><span class="prn-fonte">Estado</span></label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control form-control-sm" id="estado" placeholder="col-form-label-sm" value="@ViewBag.Estado" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="reg" class="col-sm-2 col-form-label col-form-label-sm"><span class="prn-fonte">Registros</span></label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control form-control-sm" id="reg" placeholder="col-form-label-sm" value="@ViewBag.TotalIcmsVarejoCF" readonly>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+
+    }
+
+</div>
+
+@if (ViewBag.ErroMensagem == null)
+{
+<main class="container">
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    Icms de Saída
+                </div>
+                <div class="card-body">
+                    <div class="container pr-container  pr-card-cad row">
+
+                        <div class="col-lg-6 col-sm-12 pr-1">
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Aliquota de ICMS venda no varejo para Consumidor Final
+                                </div> <!--CAbeçalho-->
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <div id="aliIcmsVarConsFinal" style="width: 450px; height: 300px;"></div>
+                                                </div><!--Container fluid da coluna-->
+                                            </div><!--12 colunas a linha-->
+                                        </div><!--linha do container do body-->
+                                    </div> <!--container do body-->
+                                </div><!--body-->
+                            </div><!--card-->
+
+                        </div>
+
+                        <div class="col-lg-6 col-sm-12 pr-1">
+                            <div class="card">
+                                <div class="card-header">
+                                    Aliquota de ICMS ST venda no varejo para Consumidor Final
+                                </div> <!--CAbeçalho-->
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <div id="aliIcmsSTVarConsFinal" style="width: 450px; height: 300px;"></div>
+                                                </div><!--Container fluid da coluna-->
+                                            </div><!--12 colunas a linha-->
+                                        </div><!--linha do container do body-->
+                                    </div> <!--container do body-->
+                                </div><!--body-->
+                            </div><!--card-->
+                        </div>
+
+
+                    </div> <!--container maior-->
+
+
+                    <div class="container pr-container-2  pr-card-cad row">
+
+                        <div class="col-lg-6 col-sm-12 pr-1">
+                            <div class="card">
+                                <div class="card-header">
+                                    Aliquota de ICMS venda varejo para Contribuinte
+                                </div> <!--CAbeçalho-->
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <div id="aliIcmsVendaVarCont" style="width: 450px; height: 300px;"></div>
+                                                </div><!--Container fluid da coluna-->
+                                            </div><!--12 colunas a linha-->
+                                        </div><!--linha do container do body-->
+                                    </div> <!--container do body-->
+                                </div><!--body-->
+                            </div><!--card-->
+                        </div>
+
+                        <div class="col-lg-6 col-sm-12 pr-1">
+
+                            <div class="card">
+                                <div class="card-header">
+                                    Aliquota de ICMS ST venda varejo para Contribuinte
+                                </div> <!--CAbeçalho-->
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <div id="aliIcmsSTVendaVarCont" style="width: 450px; height: 300px;"></div>
+                                                </div><!--Container fluid da coluna-->
+                                            </div><!--12 colunas a linha-->
+                                        </div><!--linha do container do body-->
+                                    </div> <!--container do body-->
+                                </div><!--body-->
+                            </div><!--card-->
+                        </div>
+
+
+
+
+
+                    </div> <!--container maior-->
+
+
+
+
+
+
+                    <div class="container pr-container-2  pr-card-cad row">
+
+                        <div class="col-lg-6 col-sm-12 pr-1">
+                            <div class="card">
+                                <div class="card-header">
+                                    Aliq ICMS Venda Atacado para Contribuinte
+                                </div> <!--CAbeçalho-->
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <div id="aliIcmsVendaAtaCont" style="width: 450px; height: 300px;"></div>
+                                                </div><!--Container fluid da coluna-->
+                                            </div><!--12 colunas a linha-->
+                                        </div><!--linha do container do body-->
+                                    </div> <!--container do body-->
+                                </div><!--body-->
+                            </div><!--card-->
+                        </div>
+
+                        <div class="col-lg-6 col-sm-12 pr-1">
+                            <div class="card">
+                                <div class="card-header">
+                                    Aliq ICMS ST Venda Atacado para Contribuinte
+                                </div> <!--CAbeçalho-->
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <div id="aliIcmsSTVendaAtaCont" style="width: 450px; height: 300px;"></div>
+                                                </div><!--Container fluid da coluna-->
+                                            </div><!--12 colunas a linha-->
+                                        </div><!--linha do container do body-->
+                                    </div> <!--container do body-->
+                                </div><!--body-->
+                            </div><!--card-->
+                        </div>
+
+
+
+
+
+
+
+                    </div> <!--container maior-->
+
+
+
+
+                    <div class="container pr-container-2  pr-card-cad row">
+
+                        <div class="col-lg-6 col-sm-12 pr-1">
+                            <div class="card">
+                                <div class="card-header">
+                                    Aliq ICMS Venda no atacado para Simples Nacional
+                                </div> <!--CAbeçalho-->
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <div id="aliqIcmsVendaAtaSN" style="width: 450px; height: 300px;"></div>
+                                                </div><!--Container fluid da coluna-->
+                                            </div><!--12 colunas a linha-->
+                                        </div><!--linha do container do body-->
+                                    </div> <!--container do body-->
+                                </div><!--body-->
+                            </div><!--card-->
+                        </div>
+
+                        <div class="col-lg-6 col-sm-12 pr-1">
+                            <div class="card">
+                                <div class="card-header">
+                                    Aliq ICMS ST Venda no atacado para Simples Nacional
+                                </div> <!--CAbeçalho-->
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="container-fluid">
+                                                    <div id="aliqIcmsSTVendaAtaSN" style="width: 450px; height: 300px;"></div>
+                                                </div><!--Container fluid da coluna-->
+                                            </div><!--12 colunas a linha-->
+                                        </div><!--linha do container do body-->
+                                    </div> <!--container do body-->
+                                </div><!--body-->
+                            </div><!--card-->
+                        </div>
+
+
+
+
+
+                    </div> <!--container maior-->
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    Red. Base de Calc. Icms de Saída
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Demonstrativo de  Red. Base de Calc. Icms de Saída</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    Red. Base de Calc. Icms ST de Saída
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Demonstrativo de  Red. Base de Calc. Icms ST de Saída</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    Icms de Entrada
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Demonstrativo de ICMS Entrada</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    Red. Base de Calc. Icms de  Entrada
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Demonstrativo Red. Base de Calc. Icms de  Entrada</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    Pis/Cofins
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Demonstrativo Pis/Cofins</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    CST Saída
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Demonstrativo CST Saída</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    CST Entrada
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Demonstrativo CST Entrada</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg">
+            <div class="card">
+                <div class="card-header">
+                    Produtos
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Gráfico Demonstrativo Produtos</h5>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+}
+

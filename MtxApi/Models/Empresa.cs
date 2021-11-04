@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace MtxApi.Models
 {
@@ -54,6 +55,10 @@ namespace MtxApi.Models
 
         [Column("dataalt")]
         public System.DateTime dataalt { get; set; }
+
+     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Usuario> usuario { get; set; }
 
 
 
