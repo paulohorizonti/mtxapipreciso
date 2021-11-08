@@ -21,8 +21,10 @@ textarea {
     background-repeat: no-repeat;
 }
 .prn-fonte {
-    font-weight:600;
-    font-size:1rem;
+    color:#fff;
+    font-weight: 600;
+    font-size: 1rem;
+    text-shadow: 0.1em 0.1em 0.2em black
 }
 .pr-card-cad {
     margin-left: 5px !important;

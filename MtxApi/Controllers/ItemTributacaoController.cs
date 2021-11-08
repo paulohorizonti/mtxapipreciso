@@ -323,7 +323,8 @@ namespace MtxApi.Controllers
         public HttpResponseMessage GetTributacaoEmpresaAnalise(string cnpj)
         {
             var response = Request.CreateResponse(HttpStatusCode.Moved);
-            response.Headers.Location = new Uri("https://localhost:44320/HomeApi/EmpresaTributacao?cnpj="+cnpj);
+            //response.Headers.Location = new Uri("https://localhost:44320/HomeApi/EmpresaTributacao?cnpj="+cnpj);
+            response.Headers.Location = new Uri("http://api.precisomtx.com.br/HomeApi/EmpresaTributacao?cnpj=" + cnpj);
             return response;
         }
 
