@@ -336,3 +336,4 @@ E:\MtxApi\MtxApi\obj\Release\MtxApi.csproj.AssemblyReference.cache
 E:\MtxApi\MtxApi\obj\Release\MtxApi.csproj.CoreCompileInputs.cache
 E:\MtxApi\MtxApi\obj\Release\MtxApi.dll
 E:\MtxApi\MtxApi\obj\Release\MtxApi.pdb
+C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Release\MtxApi.csproj.CopyComplete

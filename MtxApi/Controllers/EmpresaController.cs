@@ -167,7 +167,7 @@ namespace MtxApi.Controllers
                             Usuario usuarioSalvar = new Usuario();
                             usuarioSalvar.idEmpresa = empresaUsu.id;
                             usuarioSalvar.nome = "adminempresatemp_" + cnpj; //nome do usuario adminEmpresa+cnpj
-                            usuarioSalvar.senha = cnpj.ToString() + "adminempresatemp)";//senha é o usuario invertido
+                            usuarioSalvar.senha = cnpj.ToString() + "adminempresatemp";//senha é o usuario invertido
                             usuarioSalvar.idNivel = 5; //nivel administrativo
                             usuarioSalvar.ativo = 1;
                             usuarioSalvar.dataAlt = DateTime.Now;

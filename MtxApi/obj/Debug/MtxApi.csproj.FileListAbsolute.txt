@@ -167,3 +167,4 @@ C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.csproj.CoreCompileI
 C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.dll
 C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.pdb
 C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.csproj.AssemblyReference.cache
+C:\Users\preciso\source\repos\MtxApi\MtxApi\obj\Debug\MtxApi.csproj.CopyComplete
