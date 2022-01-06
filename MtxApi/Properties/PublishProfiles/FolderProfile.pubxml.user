@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>C:\Users\preciso\Desktop\mtxapi</_PublishTargetUrl>
-    <History>True|2022-01-03T17:51:26.1107817Z;</History>
+    <History>True|2022-01-06T15:25:22.4896084Z;True|2022-01-03T14:51:26.1107817-03:00;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApplicationInsights.config">
@@ -180,10 +180,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/04/2021 17:43:03</publishTime>
     </File>
     <File Include="bin/MtxApi.dll">
-      <publishTime>01/03/2022 14:51:19</publishTime>
+      <publishTime>01/06/2022 12:25:20</publishTime>
     </File>
     <File Include="bin/MtxApi.pdb">
-      <publishTime>01/03/2022 14:51:19</publishTime>
+      <publishTime>01/06/2022 12:25:20</publishTime>
     </File>
     <File Include="bin/MySql.Data.dll">
       <publishTime>11/04/2021 17:43:03</publishTime>

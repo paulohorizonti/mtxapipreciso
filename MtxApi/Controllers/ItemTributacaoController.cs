@@ -16,6 +16,8 @@ namespace MtxApi.Controllers
     {
         //log
         private static readonly log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //Instancia do contexto do banco
+        MtxApiContext db = new MtxApiContext();
 
         //Enviar dados para o banco de tributação das empresas pelo cnpj
         //Os dados vao para lista ItemTributaçãoJson que contem todos os campos
@@ -41,8 +43,8 @@ namespace MtxApi.Controllers
             //formatando a string
             string cnpjFormatado = FormataCnpj.FormatarCNPJ(cnpj);
 
-            //Instancia do contexto do banco
-            MtxApiContext db = new MtxApiContext();
+            ////Instancia do contexto do banco
+            //MtxApiContext db = new MtxApiContext();
 
             //Cria o objeto empresa pelo seu cnpj
             Empresa empresa = db.Empresas.FirstOrDefault(x => x.cnpj.Equals(cnpjFormatado));
@@ -82,6 +84,7 @@ namespace MtxApi.Controllers
 
             //contador auxiliar
             int cont = 0;
+            int contAlterados = 0;
 
             //verificar o numero de intes, se forem nullo os itens do json vieram vazios
             if (itens == null)
@@ -129,6 +132,7 @@ namespace MtxApi.Controllers
                     //pegou o ID da categoria
                     var categoriaProd = (from ab in db.CategoriasProdutos where item.PRODUTO_CATEGORIA == ab.descricao select ab.id).FirstOrDefault();
 
+
                     //Se houver a categoria ele atribui ao item e continua, caso não tenha ele atribui nullo e continua
                     /*Isso se deve ao fato que o cliente pode haver mais categorias e/ou categorias diferentes
                      o que não é relevante para analise, por isso atribuimos nulla caso seja diferente ou inexistente
@@ -154,7 +158,7 @@ namespace MtxApi.Controllers
                     {
                         prodZerado++;
                     }
-                    
+
                     //se o codigo de barras não foi importado o entra na condição, ou seja o retorno do tribempresas2 é 0
                     //sendo zero o produto nao foi importado, agora ele será com todos os seus dados
                     //alteração 16092021->alem de nao ter encontrado nada no banco, count=0 o codigo de barras deve ser diferente de 0(zero)
@@ -242,14 +246,14 @@ namespace MtxApi.Controllers
                             //erros e mensagens
                             if (e.InnerException != null && e.InnerException.InnerException != null && e.InnerException.InnerException.Message != null)
                             {
-                               
+
                                 _log.Error(e.InnerException.InnerException.Message);
                                 return BadRequest("ERRO AO SALVAR ITEM: " + e.InnerException.InnerException.Message);
                             }
 
                             if (e.Message != null)
                             {
-                               
+
                                 _log.Error("ERRO AO SALVAR itemRec " + e.Message);
                                 return BadRequest("ERRO AO SALVAR ITEM: " + e.Message);
                             }
@@ -259,6 +263,139 @@ namespace MtxApi.Controllers
 
 
                     }//fim do if que verifica se o codigo de barras ja foi importado
+                    else //se o produto ja tiver sido importado, os dados devem ser atualizados 
+                    {
+                        //pegar o id do registros
+                        var idRegistros = (from ab in db.TributacaoEmpresas where item.PRODUTO_COD_BARRAS == ab.PRODUTO_COD_BARRAS && ab.CNPJ_EMPRESA.Contains(cnpjFormatado) select ab.ID).FirstOrDefault();
+                        if(idRegistros != 0)
+                        {
+
+
+                            itemSalvar = db.TributacaoEmpresas.Find(idRegistros);
+
+
+                            itemSalvar.PRODUTO_DESCRICAO = (itemSalvar.PRODUTO_DESCRICAO != item.PRODUTO_DESCRICAO) ? ((item.PRODUTO_DESCRICAO != null) ? item.PRODUTO_DESCRICAO : itemSalvar.PRODUTO_DESCRICAO) : itemSalvar.PRODUTO_DESCRICAO;
+                            itemSalvar.PRODUTO_CEST = (itemSalvar.PRODUTO_CEST != item.PRODUTO_CEST) ? ((item.PRODUTO_CEST != null) ? item.PRODUTO_CEST : itemSalvar.PRODUTO_CEST) : itemSalvar.PRODUTO_CEST;
+                            itemSalvar.PRODUTO_NCM = (itemSalvar.PRODUTO_NCM != item.PRODUTO_NCM) ? ((item.PRODUTO_NCM != null) ? item.PRODUTO_NCM : itemSalvar.PRODUTO_NCM) : itemSalvar.PRODUTO_NCM;
+                            itemSalvar.PRODUTO_CATEGORIA = (itemSalvar.PRODUTO_CATEGORIA != item.PRODUTO_CATEGORIA) ? ((item.PRODUTO_CATEGORIA != null) ? item.PRODUTO_CATEGORIA : itemSalvar.PRODUTO_CATEGORIA) : itemSalvar.PRODUTO_CATEGORIA;
+                            itemSalvar.FECP = (itemSalvar.FECP != item.FECP) ? ((item.FECP != null) ? item.FECP : itemSalvar.FECP) : itemSalvar.FECP;
+                            itemSalvar.COD_NAT_RECEITA = (itemSalvar.COD_NAT_RECEITA != item.COD_NAT_RECEITA) ? ((item.COD_NAT_RECEITA != null) ? item.COD_NAT_RECEITA : itemSalvar.COD_NAT_RECEITA) : itemSalvar.COD_NAT_RECEITA;
+
+                            itemSalvar.CST_ENTRADA_PIS_COFINS = (itemSalvar.CST_ENTRADA_PIS_COFINS != item.CST_ENTRADA_PIS_COFINS) ? ((item.CST_ENTRADA_PIS_COFINS != null) ? item.CST_ENTRADA_PIS_COFINS : itemSalvar.CST_ENTRADA_PIS_COFINS) : itemSalvar.CST_ENTRADA_PIS_COFINS;
+                            itemSalvar.CST_SAIDA_PIS_COFINS = (itemSalvar.CST_SAIDA_PIS_COFINS != item.CST_SAIDA_PIS_COFINS) ? ((item.CST_SAIDA_PIS_COFINS != null) ? item.CST_SAIDA_PIS_COFINS : itemSalvar.CST_SAIDA_PIS_COFINS) : itemSalvar.CST_SAIDA_PIS_COFINS;
+                            itemSalvar.ALIQ_ENTRADA_PIS = (itemSalvar.ALIQ_ENTRADA_PIS != item.ALIQ_ENTRADA_PIS) ? ((item.ALIQ_ENTRADA_PIS != null) ? item.ALIQ_ENTRADA_PIS : itemSalvar.ALIQ_ENTRADA_PIS) : itemSalvar.ALIQ_ENTRADA_PIS;
+                            itemSalvar.ALIQ_SAIDA_PIS = (itemSalvar.ALIQ_SAIDA_PIS != item.ALIQ_SAIDA_PIS) ? ((item.ALIQ_SAIDA_PIS != null) ? item.ALIQ_SAIDA_PIS : itemSalvar.ALIQ_SAIDA_PIS) : itemSalvar.ALIQ_SAIDA_PIS;
+                            itemSalvar.ALIQ_ENTRADA_COFINS = (itemSalvar.ALIQ_ENTRADA_COFINS != item.ALIQ_ENTRADA_COFINS) ? ((item.ALIQ_ENTRADA_COFINS != null) ? item.ALIQ_ENTRADA_COFINS : itemSalvar.ALIQ_ENTRADA_COFINS) : itemSalvar.ALIQ_ENTRADA_COFINS;
+                            itemSalvar.ALIQ_SAIDA_COFINS = (itemSalvar.ALIQ_SAIDA_COFINS != item.ALIQ_SAIDA_COFINS) ? ((item.ALIQ_SAIDA_COFINS != null) ? item.ALIQ_SAIDA_COFINS : itemSalvar.ALIQ_SAIDA_COFINS) : itemSalvar.ALIQ_SAIDA_COFINS;
+
+                            itemSalvar.CST_VENDA_ATA = (itemSalvar.CST_VENDA_ATA != item.CST_VENDA_ATA) ? ((item.CST_VENDA_ATA != null) ? item.CST_VENDA_ATA : itemSalvar.CST_VENDA_ATA) : itemSalvar.CST_VENDA_ATA;
+                            itemSalvar.ALIQ_ICMS_VENDA_ATA = (itemSalvar.ALIQ_ICMS_VENDA_ATA != item.ALIQ_ICMS_VENDA_ATA) ? ((item.ALIQ_ICMS_VENDA_ATA != null) ? item.ALIQ_ICMS_VENDA_ATA : itemSalvar.ALIQ_ICMS_VENDA_ATA) : itemSalvar.ALIQ_ICMS_VENDA_ATA;
+                            itemSalvar.ALIQ_ICMS_ST_VENDA_ATA = (itemSalvar.ALIQ_ICMS_ST_VENDA_ATA != item.ALIQ_ICMS_ST_VENDA_ATA) ? ((item.ALIQ_ICMS_ST_VENDA_ATA != null) ? item.ALIQ_ICMS_ST_VENDA_ATA : itemSalvar.ALIQ_ICMS_ST_VENDA_ATA) : itemSalvar.ALIQ_ICMS_ST_VENDA_ATA;
+                            itemSalvar.RED_BASE_CALC_ICMS_VENDA_ATA = (itemSalvar.RED_BASE_CALC_ICMS_VENDA_ATA != item.RED_BASE_CALC_ICMS_VENDA_ATA) ? ((item.RED_BASE_CALC_ICMS_VENDA_ATA != null) ? item.RED_BASE_CALC_ICMS_VENDA_ATA : itemSalvar.RED_BASE_CALC_ICMS_VENDA_ATA) : itemSalvar.RED_BASE_CALC_ICMS_VENDA_ATA;
+                            itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_ATA = (itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_ATA != item.RED_BASE_CALC_ICMS_ST_VENDA_ATA) ? ((item.RED_BASE_CALC_ICMS_ST_VENDA_ATA != null) ? item.RED_BASE_CALC_ICMS_ST_VENDA_ATA : itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_ATA) : itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_ATA;
+
+                            itemSalvar.CST_VENDA_ATA_SIMP_NACIONAL = (itemSalvar.CST_VENDA_ATA_SIMP_NACIONAL != item.CST_VENDA_ATA_SIMP_NACIONAL) ? ((item.CST_VENDA_ATA_SIMP_NACIONAL != null) ? item.CST_VENDA_ATA_SIMP_NACIONAL : itemSalvar.CST_VENDA_ATA_SIMP_NACIONAL) : itemSalvar.CST_VENDA_ATA_SIMP_NACIONAL;
+                            itemSalvar.ALIQ_ICMS_VENDA_ATA_SIMP_NACIONAL = (itemSalvar.ALIQ_ICMS_VENDA_ATA_SIMP_NACIONAL != item.ALIQ_ICMS_VENDA_ATA_SIMP_NACIONAL) ? ((item.ALIQ_ICMS_VENDA_ATA_SIMP_NACIONAL != null) ? item.ALIQ_ICMS_VENDA_ATA_SIMP_NACIONAL : itemSalvar.ALIQ_ICMS_VENDA_ATA_SIMP_NACIONAL) : itemSalvar.ALIQ_ICMS_VENDA_ATA_SIMP_NACIONAL;
+                            itemSalvar.ALIQ_ICMS_ST_VENDA_ATA_SIMP_NACIONAL = (itemSalvar.ALIQ_ICMS_ST_VENDA_ATA_SIMP_NACIONAL != item.ALIQ_ICMS_ST_VENDA_ATA_SIMP_NACIONAL) ? ((item.ALIQ_ICMS_ST_VENDA_ATA_SIMP_NACIONAL != null) ? item.ALIQ_ICMS_ST_VENDA_ATA_SIMP_NACIONAL : itemSalvar.ALIQ_ICMS_ST_VENDA_ATA_SIMP_NACIONAL) : itemSalvar.ALIQ_ICMS_ST_VENDA_ATA_SIMP_NACIONAL;
+                            itemSalvar.RED_BASE_CALC_ICMS_VENDA_ATA_SIMP_NACIONAL = (itemSalvar.RED_BASE_CALC_ICMS_VENDA_ATA_SIMP_NACIONAL != item.RED_BASE_CALC_ICMS_VENDA_ATA_SIMP_NACIONAL) ? ((item.RED_BASE_CALC_ICMS_VENDA_ATA_SIMP_NACIONAL != null) ? item.RED_BASE_CALC_ICMS_VENDA_ATA_SIMP_NACIONAL : itemSalvar.RED_BASE_CALC_ICMS_VENDA_ATA_SIMP_NACIONAL) : itemSalvar.RED_BASE_CALC_ICMS_VENDA_ATA_SIMP_NACIONAL;
+                            itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_ATA_SIMP_NACIONAL = (itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_ATA_SIMP_NACIONAL != item.RED_BASE_CALC_ICMS_ST_VENDA_ATA_SIMP_NACIONAL) ? ((item.RED_BASE_CALC_ICMS_ST_VENDA_ATA_SIMP_NACIONAL != null) ? item.RED_BASE_CALC_ICMS_ST_VENDA_ATA_SIMP_NACIONAL : itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_ATA_SIMP_NACIONAL) : itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_ATA_SIMP_NACIONAL;
+
+
+                            itemSalvar.CST_VENDA_VAREJO_CONT = (itemSalvar.CST_VENDA_VAREJO_CONT != item.CST_VENDA_VAREJO_CONT) ? ((item.CST_VENDA_VAREJO_CONT != null) ? item.CST_VENDA_VAREJO_CONT : itemSalvar.CST_VENDA_VAREJO_CONT) : itemSalvar.CST_VENDA_VAREJO_CONT;
+                            itemSalvar.ALIQ_ICMS_VENDA_VAREJO_CONT = (itemSalvar.ALIQ_ICMS_VENDA_VAREJO_CONT != item.ALIQ_ICMS_VENDA_VAREJO_CONT) ? ((item.ALIQ_ICMS_VENDA_VAREJO_CONT != null) ? item.ALIQ_ICMS_VENDA_VAREJO_CONT : itemSalvar.ALIQ_ICMS_VENDA_VAREJO_CONT) : itemSalvar.ALIQ_ICMS_VENDA_VAREJO_CONT;
+                            itemSalvar.RED_BASE_CALC_VENDA_VAREJO_CONT = (itemSalvar.RED_BASE_CALC_VENDA_VAREJO_CONT != item.RED_BASE_CALC_VENDA_VAREJO_CONT) ? ((item.RED_BASE_CALC_VENDA_VAREJO_CONT != null) ? item.RED_BASE_CALC_VENDA_VAREJO_CONT : itemSalvar.RED_BASE_CALC_VENDA_VAREJO_CONT) : itemSalvar.RED_BASE_CALC_VENDA_VAREJO_CONT;
+                            itemSalvar.RED_BASE_CALC_ST_VENDA_VAREJO_CONT = (itemSalvar.RED_BASE_CALC_ST_VENDA_VAREJO_CONT != item.RED_BASE_CALC_ST_VENDA_VAREJO_CONT) ? ((item.RED_BASE_CALC_ST_VENDA_VAREJO_CONT != null) ? item.RED_BASE_CALC_ST_VENDA_VAREJO_CONT : itemSalvar.RED_BASE_CALC_ST_VENDA_VAREJO_CONT) : itemSalvar.RED_BASE_CALC_ST_VENDA_VAREJO_CONT;
+
+
+                            itemSalvar.CST_VENDA_VAREJO_CONS_FINAL = (itemSalvar.CST_VENDA_VAREJO_CONS_FINAL != item.CST_VENDA_VAREJO_CONS_FINAL) ? ((item.CST_VENDA_VAREJO_CONS_FINAL != null) ? item.CST_VENDA_VAREJO_CONS_FINAL : itemSalvar.CST_VENDA_VAREJO_CONS_FINAL) : itemSalvar.CST_VENDA_VAREJO_CONS_FINAL;
+                            itemSalvar.ALIQ_ICMS_VENDA_VAREJO_CONS_FINAL = (itemSalvar.ALIQ_ICMS_VENDA_VAREJO_CONS_FINAL != item.ALIQ_ICMS_VENDA_VAREJO_CONS_FINAL) ? ((item.ALIQ_ICMS_VENDA_VAREJO_CONS_FINAL != null) ? item.ALIQ_ICMS_VENDA_VAREJO_CONS_FINAL : itemSalvar.ALIQ_ICMS_VENDA_VAREJO_CONS_FINAL) : itemSalvar.ALIQ_ICMS_VENDA_VAREJO_CONS_FINAL;
+                            itemSalvar.ALIQ_ICMS_ST_VENDA_VAREJO_CONS_FINAL = (itemSalvar.ALIQ_ICMS_ST_VENDA_VAREJO_CONS_FINAL != item.ALIQ_ICMS_ST_VENDA_VAREJO_CONS_FINAL) ? ((item.ALIQ_ICMS_ST_VENDA_VAREJO_CONS_FINAL != null) ? item.ALIQ_ICMS_ST_VENDA_VAREJO_CONS_FINAL : itemSalvar.ALIQ_ICMS_ST_VENDA_VAREJO_CONS_FINAL) : itemSalvar.ALIQ_ICMS_ST_VENDA_VAREJO_CONS_FINAL;
+                            itemSalvar.RED_BASE_CALC_ICMS_VENDA_VAREJO_CONS_FINAL = (itemSalvar.RED_BASE_CALC_ICMS_VENDA_VAREJO_CONS_FINAL != item.RED_BASE_CALC_ICMS_VENDA_VAREJO_CONS_FINAL) ? ((item.RED_BASE_CALC_ICMS_VENDA_VAREJO_CONS_FINAL != null) ? item.RED_BASE_CALC_ICMS_VENDA_VAREJO_CONS_FINAL : itemSalvar.RED_BASE_CALC_ICMS_VENDA_VAREJO_CONS_FINAL) : itemSalvar.RED_BASE_CALC_ICMS_VENDA_VAREJO_CONS_FINAL;
+                            itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_VAREJO_CONS_FINAL = (itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_VAREJO_CONS_FINAL != item.RED_BASE_CALC_ICMS_ST_VENDA_VAREJO_CONS_FINAL) ? ((item.RED_BASE_CALC_ICMS_ST_VENDA_VAREJO_CONS_FINAL != null) ? item.RED_BASE_CALC_ICMS_ST_VENDA_VAREJO_CONS_FINAL : itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_VAREJO_CONS_FINAL) : itemSalvar.RED_BASE_CALC_ICMS_ST_VENDA_VAREJO_CONS_FINAL;
+
+
+                            itemSalvar.CST_COMPRA_DE_IND = (itemSalvar.CST_COMPRA_DE_IND != item.CST_COMPRA_DE_IND) ? ((item.CST_COMPRA_DE_IND != null) ? item.CST_COMPRA_DE_IND : itemSalvar.CST_COMPRA_DE_IND) : itemSalvar.CST_COMPRA_DE_IND;
+                            itemSalvar.ALIQ_ICMS_COMP_DE_IND = (itemSalvar.ALIQ_ICMS_COMP_DE_IND != item.ALIQ_ICMS_COMP_DE_IND) ? ((item.ALIQ_ICMS_COMP_DE_IND != null) ? item.ALIQ_ICMS_COMP_DE_IND : itemSalvar.ALIQ_ICMS_COMP_DE_IND) : itemSalvar.ALIQ_ICMS_COMP_DE_IND;
+                            itemSalvar.ALIQ_ICMS_ST_COMP_DE_IND = (itemSalvar.ALIQ_ICMS_ST_COMP_DE_IND != item.ALIQ_ICMS_ST_COMP_DE_IND) ? ((item.ALIQ_ICMS_ST_COMP_DE_IND != null) ? item.ALIQ_ICMS_ST_COMP_DE_IND : itemSalvar.ALIQ_ICMS_ST_COMP_DE_IND) : itemSalvar.ALIQ_ICMS_ST_COMP_DE_IND;
+                            itemSalvar.RED_BASE_CALC_ICMS_COMPRA_DE_IND = (itemSalvar.RED_BASE_CALC_ICMS_COMPRA_DE_IND != item.RED_BASE_CALC_ICMS_COMPRA_DE_IND) ? ((item.RED_BASE_CALC_ICMS_COMPRA_DE_IND != null) ? item.RED_BASE_CALC_ICMS_COMPRA_DE_IND : itemSalvar.RED_BASE_CALC_ICMS_COMPRA_DE_IND) : itemSalvar.RED_BASE_CALC_ICMS_COMPRA_DE_IND;
+                            itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_IND = (itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_IND != item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_IND) ? ((item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_IND != null) ? item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_IND : itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_IND) : itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_IND;
+
+                            itemSalvar.CST_COMPRA_DE_ATA = (itemSalvar.CST_COMPRA_DE_ATA != item.CST_COMPRA_DE_ATA) ? ((item.CST_COMPRA_DE_ATA != null) ? item.CST_COMPRA_DE_ATA : itemSalvar.CST_COMPRA_DE_ATA) : itemSalvar.CST_COMPRA_DE_ATA;
+                            itemSalvar.ALIQ_ICMS_COMPRA_DE_ATA = (itemSalvar.ALIQ_ICMS_COMPRA_DE_ATA != item.ALIQ_ICMS_COMPRA_DE_ATA) ? ((item.ALIQ_ICMS_COMPRA_DE_ATA != null) ? item.ALIQ_ICMS_COMPRA_DE_ATA : itemSalvar.ALIQ_ICMS_COMPRA_DE_ATA) : itemSalvar.ALIQ_ICMS_COMPRA_DE_ATA;
+                            itemSalvar.ALIQ_ICMS_ST_COMPRA_DE_ATA = (itemSalvar.ALIQ_ICMS_ST_COMPRA_DE_ATA != item.ALIQ_ICMS_ST_COMPRA_DE_ATA) ? ((item.ALIQ_ICMS_ST_COMPRA_DE_ATA != null) ? item.ALIQ_ICMS_ST_COMPRA_DE_ATA : itemSalvar.ALIQ_ICMS_ST_COMPRA_DE_ATA) : itemSalvar.ALIQ_ICMS_ST_COMPRA_DE_ATA;
+                            itemSalvar.RED_BASE_CALC_ICMS_COMPRA_DE_ATA = (itemSalvar.RED_BASE_CALC_ICMS_COMPRA_DE_ATA != item.RED_BASE_CALC_ICMS_COMPRA_DE_ATA) ? ((item.RED_BASE_CALC_ICMS_COMPRA_DE_ATA != null) ? item.RED_BASE_CALC_ICMS_COMPRA_DE_ATA : itemSalvar.RED_BASE_CALC_ICMS_COMPRA_DE_ATA) : itemSalvar.RED_BASE_CALC_ICMS_COMPRA_DE_ATA;
+                            itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_ATA = (itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_ATA != item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_ATA) ? ((item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_ATA != null) ? item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_ATA : itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_ATA) : itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_ATA;
+
+                            itemSalvar.CST_COMPRA_DE_SIMP_NACIONAL = (itemSalvar.CST_COMPRA_DE_SIMP_NACIONAL != item.CST_COMPRA_DE_SIMP_NACIONAL) ? ((item.CST_COMPRA_DE_SIMP_NACIONAL != null) ? item.CST_COMPRA_DE_SIMP_NACIONAL : itemSalvar.CST_COMPRA_DE_SIMP_NACIONAL) : itemSalvar.CST_COMPRA_DE_SIMP_NACIONAL;
+                            itemSalvar.ALIQ_ICMS_COMPRA_DE_SIMP_NACIONAL = (itemSalvar.ALIQ_ICMS_COMPRA_DE_SIMP_NACIONAL != item.ALIQ_ICMS_COMPRA_DE_SIMP_NACIONAL) ? ((item.ALIQ_ICMS_COMPRA_DE_SIMP_NACIONAL != null) ? item.ALIQ_ICMS_COMPRA_DE_SIMP_NACIONAL : itemSalvar.ALIQ_ICMS_COMPRA_DE_SIMP_NACIONAL) : itemSalvar.ALIQ_ICMS_COMPRA_DE_SIMP_NACIONAL;
+                            itemSalvar.ALIQ_ICMS_ST_COMPRA_DE_SIMP_NACIONAL = (itemSalvar.ALIQ_ICMS_ST_COMPRA_DE_SIMP_NACIONAL != item.ALIQ_ICMS_ST_COMPRA_DE_SIMP_NACIONAL) ? ((item.ALIQ_ICMS_ST_COMPRA_DE_SIMP_NACIONAL != null) ? item.ALIQ_ICMS_ST_COMPRA_DE_SIMP_NACIONAL : itemSalvar.ALIQ_ICMS_ST_COMPRA_DE_SIMP_NACIONAL) : itemSalvar.ALIQ_ICMS_ST_COMPRA_DE_SIMP_NACIONAL;
+                            itemSalvar.RED_BASE_CALC_ICMS_COMPRA_SIMP_NACIONAL = (itemSalvar.RED_BASE_CALC_ICMS_COMPRA_SIMP_NACIONAL != item.RED_BASE_CALC_ICMS_COMPRA_SIMP_NACIONAL) ? ((item.RED_BASE_CALC_ICMS_COMPRA_SIMP_NACIONAL != null) ? item.RED_BASE_CALC_ICMS_COMPRA_SIMP_NACIONAL : itemSalvar.RED_BASE_CALC_ICMS_COMPRA_SIMP_NACIONAL) : itemSalvar.RED_BASE_CALC_ICMS_COMPRA_SIMP_NACIONAL;
+                            itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_SIMP_NACIONAL = (itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_SIMP_NACIONAL != item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_SIMP_NACIONAL) ? ((item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_SIMP_NACIONAL != null) ? item.RED_BASE_CALC_ICMS_ST_COMPRA_DE_SIMP_NACIONAL : itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_SIMP_NACIONAL) : itemSalvar.RED_BASE_CALC_ICMS_ST_COMPRA_DE_SIMP_NACIONAL;
+
+
+                            itemSalvar.CST_DA_NFE_DA_IND_FORN = (itemSalvar.CST_DA_NFE_DA_IND_FORN != item.CST_DA_NFE_DA_IND_FORN) ? ((item.CST_DA_NFE_DA_IND_FORN != null) ? item.CST_DA_NFE_DA_IND_FORN : itemSalvar.CST_DA_NFE_DA_IND_FORN) : itemSalvar.CST_DA_NFE_DA_IND_FORN;
+                            itemSalvar.CST_DA_NFE_DE_ATA_FORN = (itemSalvar.CST_DA_NFE_DE_ATA_FORN != item.CST_DA_NFE_DE_ATA_FORN) ? ((item.CST_DA_NFE_DE_ATA_FORN != null) ? item.CST_DA_NFE_DE_ATA_FORN : itemSalvar.CST_DA_NFE_DE_ATA_FORN) : itemSalvar.CST_DA_NFE_DE_ATA_FORN;
+                            itemSalvar.CSOSNT_DANFE_DOS_NFOR = (itemSalvar.CSOSNT_DANFE_DOS_NFOR != item.CSOSNT_DANFE_DOS_NFOR) ? ((item.CSOSNT_DANFE_DOS_NFOR != null) ? item.CSOSNT_DANFE_DOS_NFOR : itemSalvar.CSOSNT_DANFE_DOS_NFOR) : itemSalvar.CSOSNT_DANFE_DOS_NFOR;
+
+                            itemSalvar.ALIQ_ICMS_NFE = (itemSalvar.ALIQ_ICMS_NFE != item.ALIQ_ICMS_NFE) ? ((item.ALIQ_ICMS_NFE != null) ? item.ALIQ_ICMS_NFE : itemSalvar.ALIQ_ICMS_NFE) : itemSalvar.ALIQ_ICMS_NFE;
+                            itemSalvar.ALIQ_ICMS_NFE_FOR_ATA = (itemSalvar.ALIQ_ICMS_NFE_FOR_ATA != item.ALIQ_ICMS_NFE_FOR_ATA) ? ((item.ALIQ_ICMS_NFE_FOR_ATA != null) ? item.ALIQ_ICMS_NFE_FOR_ATA : itemSalvar.ALIQ_ICMS_NFE_FOR_ATA) : itemSalvar.ALIQ_ICMS_NFE_FOR_ATA;
+                            itemSalvar.ALIQ_ICMS_NFE_FOR_SN = (itemSalvar.ALIQ_ICMS_NFE_FOR_SN != item.ALIQ_ICMS_NFE_FOR_SN) ? ((item.ALIQ_ICMS_NFE_FOR_SN != null) ? item.ALIQ_ICMS_NFE_FOR_SN : itemSalvar.ALIQ_ICMS_NFE_FOR_SN) : itemSalvar.ALIQ_ICMS_NFE_FOR_SN;
+
+
+                            itemSalvar.TIPO_MVA = (itemSalvar.TIPO_MVA != item.TIPO_MVA) ? ((item.TIPO_MVA != null) ? item.TIPO_MVA : itemSalvar.TIPO_MVA) : itemSalvar.TIPO_MVA;
+
+                            itemSalvar.VALOR_MVA_IND = (itemSalvar.VALOR_MVA_IND != item.VALOR_MVA_IND) ? ((item.VALOR_MVA_IND != null) ? item.VALOR_MVA_IND : itemSalvar.VALOR_MVA_IND) : itemSalvar.VALOR_MVA_IND;
+
+                            itemSalvar.INICIO_VIGENCIA_MVA = (itemSalvar.INICIO_VIGENCIA_MVA != item.INICIO_VIGENCIA_MVA) ? ((item.INICIO_VIGENCIA_MVA != null) ? item.INICIO_VIGENCIA_MVA : itemSalvar.INICIO_VIGENCIA_MVA) : itemSalvar.INICIO_VIGENCIA_MVA;
+
+                            itemSalvar.FIM_VIGENCIA_MVA = (itemSalvar.FIM_VIGENCIA_MVA != item.FIM_VIGENCIA_MVA) ? ((item.FIM_VIGENCIA_MVA != null) ? item.FIM_VIGENCIA_MVA : itemSalvar.FIM_VIGENCIA_MVA) : itemSalvar.FIM_VIGENCIA_MVA;
+
+                            itemSalvar.CREDITO_OUTORGADO = (itemSalvar.CREDITO_OUTORGADO != item.CREDITO_OUTORGADO) ? ((item.CREDITO_OUTORGADO != null) ? item.CREDITO_OUTORGADO : itemSalvar.CREDITO_OUTORGADO) : itemSalvar.CREDITO_OUTORGADO;
+
+                            itemSalvar.VALOR_MVA_ATACADO = (itemSalvar.VALOR_MVA_ATACADO != item.VALOR_MVA_ATACADO) ? ((item.VALOR_MVA_ATACADO != null) ? item.VALOR_MVA_ATACADO : itemSalvar.VALOR_MVA_ATACADO) : itemSalvar.VALOR_MVA_ATACADO;
+
+                            itemSalvar.REGIME_2560 = (itemSalvar.REGIME_2560 != item.REGIME_2560) ? ((item.REGIME_2560 != null) ? item.REGIME_2560 : itemSalvar.REGIME_2560) : itemSalvar.REGIME_2560;
+
+                            itemSalvar.ESTADO = (itemSalvar.ESTADO != item.ESTADO) ? ((item.ESTADO != null) ? item.ESTADO : itemSalvar.ESTADO) : itemSalvar.ESTADO;
+
+
+
+                            //data da inclusão/alteração
+                            itemSalvar.DT_ALTERACAO = DateTime.Now;
+                            //try catch para salvar no banco e na lista de retorno
+                            try
+                            {
+
+                                //db.TributacaoEmpresas.Add(itemSalvar);//objeto para ser salvo no banco
+                                listaSalvosTribEmpresa.Add(itemSalvar);//lista para retorno
+                                contAlterados++;
+                            }
+                            catch (Exception e)
+                            {
+                                //erros e mensagens
+                                if (e.InnerException != null && e.InnerException.InnerException != null && e.InnerException.InnerException.Message != null)
+                                {
+
+                                    _log.Error(e.InnerException.InnerException.Message);
+                                    return BadRequest("ERRO AO SALVAR ITEM: " + e.InnerException.InnerException.Message);
+                                }
+
+                                if (e.Message != null)
+                                {
+
+                                    _log.Error("ERRO AO SALVAR itemRec " + e.Message);
+                                    return BadRequest("ERRO AO SALVAR ITEM: " + e.Message);
+                                }
+
+                                return BadRequest("ERRO AO SALVAR ITEM");
+                            }//fim do catch
+
+                        }
+                        
+
+
+
+                    }//fim do else caso o produto ja esteja cadastrado
 
                 } //fim do if do codigo barras nulo
                 else
@@ -269,16 +406,30 @@ namespace MtxApi.Controllers
             }//fim do foreach dos itens
 
             //se o contador de itens salvos vier zero, retorno
-            if (cont <= 0)
+            if (cont <= 0 && contAlterados <=0)
             {
-                return BadRequest("NENHUM PRODUTO IMPORTADO, TODOS INFORMADOS JÁ ESTÃO NO BANCO OU TODOS ESTÃO COM COD_BARRAS = 0(zero) - Cod. Barras igual a 0(zero): "+prodZerado.ToString());
+                var myError = new
+                {
+                    sucess = "false",
+                    errors = "NENHUM PRODUTO IMPORTADO, TODOS INFORMADOS JÁ ESTÃO NO BANCO OU TODOS ESTÃO COM COD_BARRAS = 0(zero) - Cod. Barras igual a 0(zero)"
+                };
+
+                return (IHttpActionResult)Request.CreateResponse(HttpStatusCode.BadRequest, myError);
+                //return (HttpStatusCode.BadRequest, Json("email or password is null"));
+                //return BadRequest("NENHUM PRODUTO IMPORTADO, TODOS INFORMADOS JÁ ESTÃO NO BANCO OU TODOS ESTÃO COM COD_BARRAS = 0(zero) - Cod. Barras igual a 0(zero): "+myError);
+
             }
             else
             {
                 db.SaveChanges(); //salva caso o contador seja maior que zero
             }
             _log.Debug("FINAL DE PROCESSO COM " + cont + " ITENS SALVOS");
-            return Ok("Itens informados no JSON: " + itens.Count() + " - Itens salvos: " + cont + " - Itens sem código de barras : " + aux+ " - Item com COD_BARRAS = 0(zero) : "+ prodZerado.ToString());
+
+            //return Ok("Itens informados no JSON: " + itens.Count() + " - Itens salvos: " + cont + " - Itens sem código de barras : " + aux+ " - Item com COD_BARRAS = 0(zero) : "+ prodZerado.ToString()+" - Itens alterados : "+ contAlterados);
+
+            //return Ok(new { sucess = "true", data = itens.ToArray(), paginaAtual = 1, totalPaginas = 25, totalItens = itens.Count(), tempaginaAnterior="false", temPaginaSeguinte = "false" });
+            //return Ok(new { sucess = "true", data = itens.ToArray(),  totalItens = itens.Count() });
+            return Ok(new { sucess = "true", itensSalvos = cont, semCodigoBarras = aux, itemCodigoBarrasZero = prodZerado.ToString(), itensAlterados = contAlterados, totalItens = itens.Count() });
 
         } //fim da action
 
@@ -328,7 +479,17 @@ namespace MtxApi.Controllers
             return response;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-           
+
+
+
     }
 }

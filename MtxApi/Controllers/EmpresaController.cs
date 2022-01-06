@@ -179,7 +179,8 @@ namespace MtxApi.Controllers
                             //retornar a empresa com o usuário cadastradado
                             Empresa empresaUsuListar = db.Empresas.FirstOrDefault(x => x.cnpj.Equals(cnpjFormatado));
 
-                            return Ok(empresaUsuListar);
+                            //return Ok(empresaUsuListar);
+                            return Ok(new { sucess = "true", data = empresaUsuListar});
                         }
 
                         
@@ -200,7 +201,15 @@ namespace MtxApi.Controllers
 
         }
 
-        
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
 
 
 

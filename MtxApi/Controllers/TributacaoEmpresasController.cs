@@ -50,7 +50,8 @@ namespace MtxApi.Controllers
             }
 
             //caso esteja ok, exibir o resultado
-            return Ok(tribempresas);
+            return Ok(new { sucess = "true", data = tribempresas.ToArray(),  totalItens = tribempresas.Count() });
+            //return Ok(tribempresas);
 
         }
 
@@ -59,6 +60,14 @@ namespace MtxApi.Controllers
             return Convert.ToUInt64(CNPJ).ToString(@"00\.000\.000\/0000\-00");
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
 
 
