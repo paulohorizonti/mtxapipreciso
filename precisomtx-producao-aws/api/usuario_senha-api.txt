@@ -1,0 +1,8 @@
+Acesso ao AWS
+Usuário: desenvolvimento@precisotax.com.br
+Senha: Conciso0408
+
+--------------------------------
+Acesso remoto à maquina em execução
+Usuario: Administrator
+Senha: A7wM;SS.%hhtPTvDe6@D75mQeXMyCVdYg
