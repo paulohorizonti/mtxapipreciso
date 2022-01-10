@@ -1,11 +1,14 @@
 ﻿using MtxApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Security.Policy;
+using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -37,7 +40,7 @@ namespace MtxApi.Controllers
 
 
         //Retorna a empresa pelo CNPJ
-        // GET: api/EmpresaMtx/5
+        
         [Route("api/EmpresaCnpj/{cnpj}")]
         [ResponseType(typeof(Empresa))]
         public IHttpActionResult GetEmpresaCnpj(string cnpj)
@@ -97,6 +100,7 @@ namespace MtxApi.Controllers
             {
                 return BadRequest("JSON SEM DADOS DA EMPRESA PARA CADASTRO");
             }
+          
 
             //formatando a string
             string cnpjFormatado = FormataCnpj.FormatarCNPJ(cnpj);
@@ -129,6 +133,18 @@ namespace MtxApi.Controllers
                             }
                         }
                     }
+                    //verifica se o usuario passou informacao
+                    if(dado.USUARIO_ADMIN_INICIAL == null)
+                    {
+                        return BadRequest("FAVOR INFORMAR UM USUARIO ADMIN INICIAL VÁLIDO: e-mail válido.");
+
+                    }
+
+                    //verifica se o email contem carcteres válidos
+                    if (!IsValidEmail(dado.USUARIO_ADMIN_INICIAL.ToLower())) 
+                    {
+                        return BadRequest("Formato de e-mail para usuario inicial inválido.");
+                    }
 
                     //tenta salvar os dados
                     try
@@ -144,7 +160,9 @@ namespace MtxApi.Controllers
                         empresaSalvar.cidade = dado.CIDADE;
                         empresaSalvar.estado = dado.ESTADO;
                         empresaSalvar.telefone = dado.TELEFONE;
-                        empresaSalvar.email = dado.EMAIL;
+                        empresaSalvar.email = dado.EMAIL.ToLower();
+
+                        empresaSalvar.usuario_admin_inicial = dado.USUARIO_ADMIN_INICIAL.ToLower();
 
                         //automaticos
                         empresaSalvar.datacad = DateTime.Now;
@@ -172,9 +190,66 @@ namespace MtxApi.Controllers
                             usuarioSalvar.ativo = 1;
                             usuarioSalvar.dataAlt = DateTime.Now;
                             usuarioSalvar.dataCad = DateTime.Now;
-                            usuarioSalvar.email = "admintemp_" + cnpj + "@precisomtx.com.br";//usuario
+                            usuarioSalvar.email = empresaUsu.usuario_admin_inicial;//usuario
+
                             db.Usuarios.Add(usuarioSalvar);
-                            db.SaveChanges();
+                           
+                                
+                                //testar envio de email
+                                SmtpClient smtp = new System.Net.Mail.SmtpClient();
+                                smtp.Host = "smtpout.secureserver.net";
+                                smtp.Port = 587;
+                                smtp.EnableSsl = true;
+                                smtp.UseDefaultCredentials = false;
+                                smtp.Credentials = new System.Net.NetworkCredential("desenvolvimento@precisomtx.com.br", "teste1234");
+
+                                MailMessage mail = new System.Net.Mail.MailMessage();
+                                mail.From = new System.Net.Mail.MailAddress("desenvolvimento@precisomtx.com.br");
+                                if (!string.IsNullOrWhiteSpace(usuarioSalvar.email.ToLower()))
+                                {
+                                    mail.To.Add(new System.Net.Mail.MailAddress(usuarioSalvar.email));
+                                }
+                                else
+                                {
+                                    return BadRequest("Favor informar um e-mail válido.");
+                                }
+                                mail.Subject = "Senha Provisória - PrecisoMtx";
+                                mail.Body = "Segue informações de usuário e senha provisórios:\n ";
+                                mail.Body += "Usuário: "+ usuarioSalvar.email+"\n";
+                                mail.Body += "Senha: " + usuarioSalvar.senha + "\n";
+                                mail.Body += "Obs.: A senha será alterada no primeiro acesso \n";
+                                mail.Body += "Acesse: " + "http://3.141.167.140/Home/Login" + " para o primeiro Login \n";
+
+
+                            //envio de email
+                            try
+                                {
+
+                                try
+                                {
+                                    smtp.Send(mail);
+                                    db.SaveChanges();
+                                }
+                                catch (SmtpFailedRecipientException ex)
+                                {
+                                    db.Empresas.Remove(empresaUsu);
+                                    db.SaveChanges();
+                                    return BadRequest("Problemas ao enviar autenticação, por favor verifique o email do usuario admin inicial. : ERRO : "+ex.ToString());
+                                }
+
+
+                               
+                                   
+                                }
+                                catch(SmtpException e)
+                                {
+                                    //se nao enviou o email a empresa precisa ser deletada
+                                db.Empresas.Remove(empresaUsu);
+                                db.SaveChanges();
+                                return BadRequest("Problemas ao enviar autenticação, por favor verifique o email do usuario admin inicial.");
+                                }
+                          
+                           
 
                             //retornar a empresa com o usuário cadastradado
                             Empresa empresaUsuListar = db.Empresas.FirstOrDefault(x => x.cnpj.Equals(cnpjFormatado));
@@ -199,6 +274,49 @@ namespace MtxApi.Controllers
 
             return Ok();
 
+        }
+
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Normalize the domain
+                email = Regex.Replace(email, @"(@)(.+)$", DomainMapper, RegexOptions.None, TimeSpan.FromMilliseconds(200));
+
+                // Examines the domain part of the email and normalizes it.
+                string DomainMapper(Match match)
+                {
+                    // Use IdnMapping class to convert Unicode domain names.
+                    var idn = new IdnMapping();
+
+                    // Pull out and process domain name (throws ArgumentException on invalid)
+                    string domainName = idn.GetAscii(match.Groups[2].Value);
+
+                    return match.Groups[1].Value + domainName;
+                }
+            }
+            catch (RegexMatchTimeoutException e)
+            {
+                return false;
+            }
+            catch (ArgumentException e)
+            {
+                return false;
+            }
+
+            try
+            {
+                return Regex.IsMatch(email,
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
         }
 
         protected override void Dispose(bool disposing)

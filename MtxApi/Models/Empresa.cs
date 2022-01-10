@@ -56,7 +56,9 @@ namespace MtxApi.Models
         [Column("dataalt")]
         public System.DateTime dataalt { get; set; }
 
-     
+        [Column("usuario_admin_inicial")]
+        public string usuario_admin_inicial { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Usuario> usuario { get; set; }
 

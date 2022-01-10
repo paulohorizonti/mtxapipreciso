@@ -68,7 +68,10 @@ namespace MtxApi.Models
         [Column("estado")]
         public string estado { get; set; }
 
-       
+        
+        [Column("primeiro_acesso")]
+        public sbyte primeiro_acesso { get; set; }
+
         [ForeignKey("empresa")]
         [Column("idempresa")]
         public int idEmpresa { get; set; }
