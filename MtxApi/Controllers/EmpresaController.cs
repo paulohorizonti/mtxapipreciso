@@ -191,6 +191,7 @@ namespace MtxApi.Controllers
                             usuarioSalvar.dataAlt = DateTime.Now;
                             usuarioSalvar.dataCad = DateTime.Now;
                             usuarioSalvar.email = empresaUsu.usuario_admin_inicial;//usuario
+                            usuarioSalvar.primeiro_acesso = 1;
 
                             db.Usuarios.Add(usuarioSalvar);
                            
